@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+f1-explained/blender_scripts/_tex/
+*.blend1
+.DS_Store
+node_modules/
+f1-explained/blender_scripts/_checks/

@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formula 1, Explained in 3D</title>
+<meta name="description" content="An interactive, 3D guide to every core concept in Formula 1: the championship, race weekends, car anatomy, aerodynamics, DRS, hybrid power units, tyres, strategy, flags, cornering physics and how the cars evolved.">
+<meta name="theme-color" content="#07080c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307080c'/%3E%3Cpath d='M12 42 L30 22 H54 L48 30 H34 L28 36 H44 L38 42 Z' fill='%23ff4d1a'/%3E%3C/svg%3E">
+<link rel="preload" href="assets/fonts/titillium-web-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{ "imports": {
+    "three": "./js/vendor/three.module.min.js",
+    "three/addons/": "./js/vendor/addons/"
+} }
+</script>
+</head>
+<body>
+
+<!-- ============ LOADING SCREEN ============ -->
+<div id="loader" role="status" aria-live="polite">
+  <div class="loader-inner">
+    <div class="loader-mark" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="loader-title">FORMULA 1 <em>EXPLAINED</em></div>
+    <div class="loader-bar"><i id="loaderFill"></i></div>
+    <div class="loader-text" id="loaderText">Warming up the tyres…</div>
+  </div>
+</div>
+
+<!-- ============ NAVIGATION ============ -->
+<header id="topbar">
+  <a class="brand" href="#hero" aria-label="Back to top"><b>F1</b><span>Explained</span></a>
+  <nav id="nav" aria-label="Chapters">
+    <a href="#intro" data-n="01">Championship</a>
+    <a href="#weekend" data-n="02">Weekend</a>
+    <a href="#anatomy" data-n="03">Anatomy</a>
+    <a href="#aero" data-n="04">Aero</a>
+    <a href="#drs" data-n="05">DRS</a>
+    <a href="#power" data-n="06">Power</a>
+    <a href="#tyres" data-n="07">Tyres</a>
+    <a href="#pit" data-n="08">Strategy</a>
+    <a href="#flags" data-n="09">Flags</a>
+    <a href="#cornering" data-n="10">Physics</a>
+    <a href="#eras" data-n="11">Eras</a>
+    <a href="#quiz" data-n="12">Quiz</a>
+  </nav>
+  <button id="navToggle" aria-label="Open chapter menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <div id="progress" aria-hidden="true"><i></i></div>
+</header>
+
+<!-- ============ 3D STAGE ============ -->
+<div id="stage" aria-label="Interactive 3D car viewer">
+  <canvas id="gl" tabindex="-1"></canvas>
+  <div id="labels" aria-hidden="true"></div>
+  <div id="stageFallback" hidden>
+    <img id="fallbackImg" src="assets/img/previews/modern_hero.jpg" alt="Rendered preview of the GE-22 car">
+    <p id="fallbackMsg">3D view unavailable. Showing a pre-rendered image instead.</p>
+  </div>
+  <div id="hud">
+    <div id="hudChapter"><span id="hudNum">00</span><span id="hudTitle">Formula 1, explained</span></div>
+    <div id="hudReadout" hidden></div>
+    <div id="hudHint">Drag to rotate · buttons below to change car</div>
+  </div>
+  <div id="partCard" hidden>
+    <button class="close" aria-label="Close part info">×</button>
+    <h4 id="partName"></h4>
+    <p id="partText"></p>
+  </div>
+  <div id="carSelect" role="tablist" aria-label="Choose a car">
+    <button role="tab" data-car="classic"><b>1955</b><span>FE-55</span></button>
+    <button role="tab" data-car="wingcar"><b>1978</b><span>WC-78</span></button>
+    <button role="tab" data-car="v10"><b>2004</b><span>V10-04</span></button>
+    <button role="tab" data-car="modern" class="on"><b>2022+</b><span>GE-22</span></button>
+  </div>
+</div>
+
+<main id="content">
+
+<!-- ============ HERO ============ -->
+<section id="hero" class="chapter hero" data-scene="hero">
+  <p class="kicker">An interactive guide in 12 laps</p>
+  <h1>Formula 1,<br><span class="accent">explained in 3D.</span></h1>
+  <p class="lede">From points and pit stops to ground effect and hybrid power units: everything a new fan needs, shown on four detailed 3D cars from four eras of the sport.</p>
+  <div class="hero-stats">
+    <div><b>~24</b><span>races a season</span></div>
+    <div><b>22</b><span>drivers in 2026</span></div>
+    <div><b>5+ g</b><span>in braking &amp; fast corners</span></div>
+  </div>
+  <a class="btn primary" href="#intro">Lights out, let's go</a>
+  <p class="scroll-cue" aria-hidden="true">Scroll</p>
+  <p class="note">All cars, teams and colours on this site are fictional. Not affiliated with Formula 1, the FIA or any team.</p>
+</section>
+
+<!-- ============ 1. WHAT IS F1 ============ -->
+<section id="intro" class="chapter" data-scene="intro">
+  <p class="num">01</p>
+  <h2>What is Formula 1?</h2>
+  <p>Formula 1 is the top level of single-seater circuit racing, run by the <b>FIA</b> (the sport's governing body). The "formula" is the rulebook every car must obey: size, weight, engine, aerodynamics, safety.</p>
+  <p>Each season has around <b>24 Grands Prix</b> around the world. There are <b>two championships</b> running at once:</p>
+  <div class="two-col">
+    <div class="card">
+      <h4>Drivers' Championship</h4>
+      <p>Every driver scores points for themselves. Most points at the end of the season = World Champion.</p>
+    </div>
+    <div class="card">
+      <h4>Constructors' Championship</h4>
+      <p>Each team (constructor) builds its own chassis and runs two cars. Both drivers' points are added together. Prize money depends on this table.</p>
+    </div>
+  </div>
+
+  <h3>How points work</h3>
+  <p>The top 10 finishers in a Grand Prix score. Tap a position to see how a team's total adds up.</p>
+  <div class="widget" id="pointsWidget">
+    <div class="seg" role="tablist" aria-label="Race type">
+      <button class="on" data-mode="gp">Grand Prix</button>
+      <button data-mode="sprint">Sprint</button>
+    </div>
+    <div class="points-bars" id="pointsBars"></div>
+    <div class="team-calc" id="teamCalc">
+      <p>Pick a finishing position for each of your team's two drivers:</p>
+      <div class="calc-row"><label>Driver A <select id="drvA"></select></label><label>Driver B <select id="drvB"></select></label></div>
+      <p class="calc-out" id="calcOut"></p>
+    </div>
+  </div>
+  <details class="deep">
+    <summary>Deep dive: tie-breaks, fastest lap and short races</summary>
+    <ul>
+      <li>If drivers finish level on points, the one with more wins is ahead; then more 2nd places, and so on.</li>
+      <li>From 2019 to 2024 a bonus point went to the driver with the fastest lap (if they finished in the top 10). That bonus was dropped from 2025.</li>
+      <li>If a race is stopped early and can't restart, reduced points are given depending on how much distance was completed.</li>
+      <li>In 2026 an eleventh team joined, making the grid 22 cars.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ============ 2. RACE WEEKEND ============ -->
+<section id="weekend" class="chapter" data-scene="weekend">
+  <p class="num">02</p>
+  <h2>The race weekend</h2>
+  <p>A Grand Prix runs over three days. Most are a <b>standard weekend</b>. A handful each year are <b>Sprint weekends</b> with an extra short race on Saturday.</p>
+  <div class="widget">
+    <div class="seg" role="tablist" aria-label="Weekend format">
+      <button class="on" data-fmt="std">Standard</button>
+      <button data-fmt="sprint">Sprint</button>
+    </div>
+    <div class="timeline" id="weekendTimeline"></div>
+  </div>
+
+  <h3>Qualifying: the knockout</h3>
+  <p>Qualifying sets the starting order (the grid). It is split into three knockout sessions, and the slowest cars drop out after each one. Press play to watch it happen.</p>
+  <div class="widget" id="qualiWidget">
+    <div class="quali-head">
+      <button class="btn small" id="qualiPlay">▶ Run qualifying</button>
+      <span class="quali-stage" id="qualiStage">22 cars on track</span>
+    </div>
+    <ol class="quali-list" id="qualiList"></ol>
+  </div>
+  <div class="facts">
+    <div><b>Q1</b><span>18 min · all cars · slowest out</span></div>
+    <div><b>Q2</b><span>15 min · slowest out again</span></div>
+    <div><b>Q3</b><span>12 min · top 10 fight for pole</span></div>
+  </div>
+  <p class="small-note">With 22 cars (2026), six drop out in Q1 and six in Q2. With 20 cars it was five and five.</p>
+
+  <h3>The race and grid penalties</h3>
+  <p>A Grand Prix is the fewest laps that add up to more than <b>305 km</b> (Monaco is the exception at about 260 km), with a two-hour limit on racing time. Drivers can start lower than they qualified because of <b>grid penalties</b>: for example, using more power-unit or gearbox parts than the season allows, or causing a collision in a previous race.</p>
+  <details class="deep">
+    <summary>Deep dive: parc fermé, the 107% rule and penalty points</summary>
+    <ul>
+      <li><b>Parc fermé:</b> from qualifying onwards, teams can make only very limited changes to the car's set-up. Break parc fermé and you start from the pit lane.</li>
+      <li><b>107% rule:</b> a driver whose best Q1 time is more than 107% of the fastest Q1 time may be refused a start, although stewards can allow it (e.g. after a crash).</li>
+      <li><b>Penalty points:</b> offences add points to a driver's superlicence. 12 points within 12 months = a one-race ban.</li>
+      <li><b>In-race penalties:</b> 5 or 10 second time penalties (served at a pit stop or added to the result), drive-through, stop-go, or disqualification.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ============ 3. ANATOMY ============ -->
+<section id="anatomy" class="chapter" data-scene="anatomy">
+  <p class="num">03</p>
+  <h2>Anatomy of a modern F1 car</h2>
+  <p>A modern F1 car has around 14,000 individual components. On the right, the car has been <b>pulled apart</b>. Click any part, or a label, to find out what it does.</p>
+  <div class="widget">
+    <div class="seg" role="group" aria-label="Exploded view">
+      <button class="on" data-explode="1">Exploded</button>
+      <button data-explode="0">Assembled</button>
+    </div>
+    <div class="part-grid" id="partGrid"></div>
+  </div>
+  <div class="facts">
+    <div><b>≈ 800 kg</b><span>minimum weight with driver (no fuel)</span></div>
+    <div><b>2.0 m</b><span>maximum width (2022–25)</span></div>
+    <div><b>18 in</b><span>wheel rims since 2022</span></div>
+  </div>
+  <details class="deep">
+    <summary>Deep dive: the survival cell</summary>
+    <p>The monocoque (the "tub" around the driver) is a carbon-fibre composite shell. It must pass FIA crash and load tests before it can race: frontal and side impacts, roll-hoop loads and penetration tests. The fuel cell sits directly behind the driver inside this structure, and the battery sits beneath it.</p>
+  </details>
+</section>
+
+<!-- ============ 4. AERODYNAMICS ============ -->
+<section id="aero" class="chapter" data-scene="aero">
+  <p class="num">04</p>
+  <h2>Aerodynamics: downforce vs drag</h2>
+  <p>An F1 car's wings work like an aeroplane wing <b>upside-down</b>. Instead of lift they make <b>downforce</b>, pushing the tyres into the track so the car can corner much faster than grip alone would allow.</p>
+  <p>The cost is <b>drag</b>: air resistance that slows the car on the straights. Every setup is a trade-off between the two.</p>
+  <div class="widget" id="aeroWidget">
+    <label class="slider"><span>Speed <b id="spdVal">250</b> km/h</span><input type="range" id="spd" min="50" max="340" value="250"></label>
+    <div class="seg" role="group" aria-label="Wing level">
+      <button data-wing="high">High downforce (Monaco)</button>
+      <button class="on" data-wing="mid">Medium</button>
+      <button data-wing="low">Low drag (Monza)</button>
+    </div>
+    <div class="meter"><span>Downforce</span><div><i id="dfBar"></i></div><b id="dfVal"></b></div>
+    <div class="meter drag"><span>Drag</span><div><i id="drBar"></i></div><b id="drVal"></b></div>
+    <p class="small-note">Bars show relative values (illustrative). Both forces grow with the <b>square of speed</b>: double the speed, four times the force.</p>
+  </div>
+  <div class="aero-parts">
+    <div class="card"><h4>Front wing</h4><p>First part to meet the air. Makes downforce and, just as important, steers the airflow around the front tyres and towards the floor.</p></div>
+    <div class="card"><h4>Rear wing</h4><p>Big, adjustable-angle wing. Steeper = more grip in corners, more drag on straights.</p></div>
+    <div class="card"><h4>Floor &amp; ground effect</h4><p>Since 2022 most downforce comes from underneath. Tunnels under the floor narrow like a Venturi, so air speeds up and its pressure drops, sucking the car to the road.</p></div>
+    <div class="card"><h4>Diffuser</h4><p>The upswept exit at the back. It slows the fast underfloor air gradually back to normal speed, which keeps the pressure under the car low.</p></div>
+  </div>
+  <details class="deep">
+    <summary>Deep dive: porpoising and ride height</summary>
+    <p>Ground-effect downforce rises sharply as the car gets closer to the track. If the floor gets too close, the airflow can stall, downforce suddenly drops, the car rises, downforce returns and the car is pulled down again. This bouncing cycle is called <b>porpoising</b> and was a big problem in 2022. Teams run the car stiff and as low as they dare; a wooden-composite <b>plank</b> under the car is measured after the race to stop them running too low.</p>
+    <p>In theory, at high speed an F1 car makes more downforce than its own weight, which is why people say it could drive upside-down on a ceiling.</p>
+  </details>
+</section>
+
+<!-- ============ 5. DRS ============ -->
+<section id="drs" class="chapter" data-scene="drs">
+  <p class="num">05</p>
+  <h2>DRS: the overtaking aid</h2>
+  <p><b>DRS (Drag Reduction System)</b> was used from 2011 to 2025. On certain straights, a chasing driver could open a flap in the rear wing. This "stalls" the wing, which cuts drag and adds top speed so they can attack the car ahead.</p>
+  <div class="widget">
+    <button class="btn" id="drsBtn">Open DRS</button>
+    <div class="drs-steps">
+      <div data-step="1"><b>Detection point</b><span>Are you within 1 second of the car ahead?</span></div>
+      <div data-step="2"><b>Activation zone</b><span>Press the button on a marked straight: the flap opens.</span></div>
+      <div data-step="3"><b>Braking</b><span>Brake or lift off and the flap snaps shut.</span></div>
+    </div>
+    <div class="speed-read"><span>Speed</span><b id="drsSpeed">305</b><em>km/h</em></div>
+  </div>
+  <ul class="ticks">
+    <li>The slot gap could open up to 85 mm.</li>
+    <li>Not allowed in the first two laps of a race, just after a Safety Car restart, or when race control disables it (e.g. rain).</li>
+    <li>Qualifying and practice: free to use in the zones on any lap.</li>
+  </ul>
+  <details class="deep" open>
+    <summary>2026 update: active aerodynamics</summary>
+    <p>From 2026, DRS is gone. Both the <b>front and rear wings</b> have movable elements that every driver can switch into a low-drag "straight" setting on designated straights, then back to high-downforce for corners. For overtaking there is now an extra electrical-energy <b>boost</b> for a driver within one second of the car ahead. The animation shows the classic 2011–2025 DRS flap.</p>
+  </details>
+</section>
+
+<!-- ============ 6. POWER UNIT ============ -->
+<section id="power" class="chapter" data-scene="power">
+  <p class="num">06</p>
+  <h2>The hybrid power unit</h2>
+  <p>Since 2014, F1 cars have used a <b>1.6-litre V6 turbo hybrid</b>. It is not just an engine; it is six connected parts called the power unit (PU). The car is now in x-ray view: pick a mode and watch the energy move.</p>
+  <div class="widget" id="puWidget">
+    <div class="seg wrap" role="group" aria-label="Energy flow mode">
+      <button class="on" data-flow="throttle">Full throttle</button>
+      <button data-flow="brake">Braking</button>
+      <button data-flow="mguh">Turbo &amp; MGU-H</button>
+      <button data-flow="2026">2026 rules</button>
+    </div>
+    <p class="flow-caption" id="flowCaption"></p>
+    <div class="legend">
+      <span><i class="dot fuel"></i>Fuel / combustion</span>
+      <span><i class="dot exh"></i>Exhaust heat</span>
+      <span><i class="dot elec"></i>Electrical energy</span>
+      <span><i class="dot mech"></i>Drive to wheels</span>
+    </div>
+    <div class="split"><span>Power split</span><div class="split-bar"><i id="splitIce"></i><i id="splitElec"></i></div><b id="splitTxt"></b></div>
+  </div>
+  <div class="pu-grid">
+    <div class="card"><h4>ICE</h4><p>Internal Combustion Engine: 1.6 L V6, single turbo, rev-limited to 15,000 rpm.</p></div>
+    <div class="card"><h4>TC</h4><p>Turbocharger. Exhaust spins a turbine, which drives a compressor that forces extra air into the engine.</p></div>
+    <div class="card"><h4>MGU-K</h4><p>Motor Generator Unit – Kinetic. Harvests energy under braking; gives it back as up to 120 kW (≈160 hp) of boost (2014–25).</p></div>
+    <div class="card"><h4>MGU-H</h4><p>Motor Generator Unit – Heat. Sits on the turbo shaft and turns exhaust heat into electricity. It also spins the turbo up to kill turbo lag. <em>Removed for 2026.</em></p></div>
+    <div class="card"><h4>ES</h4><p>Energy Store: the battery, under the fuel cell.</p></div>
+    <div class="card"><h4>CE</h4><p>Control Electronics: manages how energy moves around the system.</p></div>
+  </div>
+  <details class="deep">
+    <summary>Deep dive: efficiency and the 2026 reset</summary>
+    <p>F1 power units have passed <b>50% thermal efficiency</b>, meaning more than half the fuel's energy becomes useful work. For comparison, a road-car petrol engine is typically around 30–40%. Fuel <b>flow</b> is limited (100 kg/hour in 2014–25), so power comes from efficiency, not just burning more fuel.</p>
+    <p>For 2026, the MGU-H was dropped, the MGU-K grew to <b>350 kW</b>, and power is roughly <b>half combustion, half electric</b>. Cars run on fully sustainable fuel.</p>
+  </details>
+</section>
+
+<!-- ============ 7. TYRES ============ -->
+<section id="tyres" class="chapter" data-scene="tyres">
+  <p class="num">07</p>
+  <h2>Tyres: grip is temporary</h2>
+  <p>Tyres are the only part of the car that touches the track. One supplier (Pirelli) makes them, and at each race three dry compounds are chosen from its range and named by colour. Tap a compound to fit it to the car.</p>
+  <div class="widget">
+    <div class="compounds" id="compounds">
+      <button data-c="soft" class="on"><i style="--c:#e8202a"></i><b>Soft</b><span>Most grip, wears fastest</span></button>
+      <button data-c="medium"><i style="--c:#ffd21f"></i><b>Medium</b><span>The all-rounder</span></button>
+      <button data-c="hard"><i style="--c:#f2f2f2"></i><b>Hard</b><span>Least grip, lasts longest</span></button>
+      <button data-c="inter"><i style="--c:#35b44a"></i><b>Intermediate</b><span>Damp or drying track</span></button>
+      <button data-c="wet"><i style="--c:#1f7ae0"></i><b>Wet</b><span>Heavy rain, standing water</span></button>
+    </div>
+    <div class="tread" id="treadInfo"></div>
+  </div>
+  <h3>Degradation: why lap times rise</h3>
+  <p>As a tyre wears and overheats, it loses grip and lap times go up. Softer tyres start faster but fade sooner. Near the end of their life some fall off a "cliff".</p>
+  <div class="widget">
+    <svg id="degChart" class="chart" viewBox="0 0 560 300" role="img" aria-label="Lap time versus tyre age for soft, medium and hard compounds"></svg>
+    <p class="small-note">Illustrative model. Real degradation depends on track, temperature, fuel load and driving style.</p>
+  </div>
+  <ul class="ticks">
+    <li>In a dry race each driver must use <b>at least two different dry compounds</b>, so at least one pit stop.</li>
+    <li>If the race is declared wet (inters or wets used), that rule no longer applies.</li>
+    <li>Tyres only work in a narrow <b>temperature window</b>, which is why drivers weave to warm them behind the Safety Car.</li>
+  </ul>
+  <details class="deep">
+    <summary>Deep dive: compounds and wet-weather tyres</summary>
+    <p>Pirelli's dry range runs from C1 (hardest) to C6 (softest, added in 2025). At each event three are nominated and labelled Hard (white), Medium (yellow) and Soft (red), so a "soft" at one track may be a harder compound than the "soft" at another. The grooved wet tyres clear large amounts of water: Pirelli says the full wet can move about 85 litres per second at 300 km/h, the intermediate around 30.</p>
+  </details>
+</section>
+
+<!-- ============ 8. PIT STOPS & STRATEGY ============ -->
+<section id="pit" class="chapter" data-scene="pit">
+  <p class="num">08</p>
+  <h2>Pit stops &amp; strategy</h2>
+  <p>A modern stop to change four tyres takes around <b>2 to 3 seconds</b> of standing still, done by a crew of about 20. The real cost is the whole trip through the pit lane at the speed limit (usually 80 km/h): typically <b>about 20 seconds</b> lost compared with staying out.</p>
+  <div class="widget">
+    <div class="pit-lane" id="pitLane" aria-hidden="true">
+      <div class="lane-road"></div>
+      <div class="lane-box">BOX</div>
+      <div class="lane-car" id="laneCar"></div>
+      <div class="lane-limit">80</div>
+    </div>
+    <div class="pit-timer"><span id="pitPhase">Pit entry</span><b id="pitClock">0.0</b><em>s</em></div>
+    <button class="btn small" id="pitReplay">↺ Replay stop</button>
+  </div>
+
+  <h3>Undercut vs overcut</h3>
+  <p>Two cars, one second apart. Who gets ahead after both have stopped?</p>
+  <div class="widget" id="stratWidget">
+    <div class="seg" role="group" aria-label="Strategy">
+      <button class="on" data-strat="under">Undercut</button>
+      <button data-strat="over">Overcut</button>
+    </div>
+    <svg id="stratChart" class="chart" viewBox="0 0 560 240" role="img" aria-label="Gap between two cars across the pit window"></svg>
+    <p class="flow-caption" id="stratCaption"></p>
+  </div>
+  <div class="two-col">
+    <div class="card"><h4>Undercut</h4><p>Pit <b>first</b>. Fresh tyres are much faster for a few laps, so by the time your rival pits you've gained enough to come out ahead.</p></div>
+    <div class="card"><h4>Overcut</h4><p>Stay out <b>longer</b>. Works when new tyres are slow to warm up, when the rival rejoins in traffic, or when your old tyres are still strong.</p></div>
+  </div>
+  <h3>The Safety Car effect</h3>
+  <div class="widget">
+    <div class="meter"><span>Normal stop</span><div><i style="width:100%"></i></div><b>~20 s</b></div>
+    <div class="meter sc"><span>Under Safety Car</span><div><i style="width:50%"></i></div><b>~10 s</b></div>
+    <p class="small-note">Behind the Safety Car the whole field is slow, so a stop costs roughly half as much time. That's why you see mass pit stops when it comes out. Exact figures vary by track.</p>
+  </div>
+</section>
+
+<!-- ============ 9. FLAGS & SAFETY ============ -->
+<section id="flags" class="chapter" data-scene="flags">
+  <p class="num">09</p>
+  <h2>Flags &amp; safety</h2>
+  <p>Marshals around the track (and LED panels) use flags to talk to drivers. Tap a flag to see what it means.</p>
+  <div class="flag-grid" id="flagGrid"></div>
+  <div class="flag-info" id="flagInfo" aria-live="polite"></div>
+
+  <h3>When things go wrong</h3>
+  <div class="sc-cards">
+    <div class="card"><h4><i class="badge sc">SC</i> Safety Car</h4><p>A real car leads the field at reduced speed while an incident is cleared. No overtaking; the pack bunches up, wiping out gaps.</p></div>
+    <div class="card"><h4><i class="badge vsc">VSC</i> Virtual Safety Car</h4><p>No physical car. Every driver must stay above a minimum lap-time "delta", slowing by a similar amount everywhere, so gaps are roughly kept.</p></div>
+    <div class="card"><h4><i class="badge red">RED</i> Red flag</h4><p>Session stopped. Cars return slowly to the pit lane. Teams may change tyres and do some repairs before the restart.</p></div>
+  </div>
+  <h3>The halo</h3>
+  <p>The titanium hoop above the cockpit, highlighted on the right, has been compulsory since <b>2018</b>. It weighs only around 7 kg but is tested to withstand loads comparable to the weight of a double-decker bus. It deflects debris, wheels and other cars away from the driver's head, and has been credited with saving lives in several major crashes.</p>
+  <details class="deep">
+    <summary>Deep dive: other safety systems</summary>
+    <ul>
+      <li><b>HANS device:</b> a carbon collar linking the helmet to the driver's shoulders, preventing extreme head movement in impacts.</li>
+      <li><b>Wheel tethers:</b> high-strength cables keep wheels attached to the car in a crash.</li>
+      <li><b>Medical car &amp; extraction:</b> a medical car follows the first lap and responds to crashes; seats can be lifted out with the driver strapped in.</li>
+      <li><b>Fire-resistant suits:</b> overalls, gloves and underwear are tested to protect against fire for several seconds.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ============ 10. CORNERING PHYSICS ============ -->
+<section id="cornering" class="chapter" data-scene="cornering">
+  <p class="num">10</p>
+  <h2>Cornering physics</h2>
+  <p>Drivers brake from over 300 km/h in a few seconds, then carry huge speed through corners. The <b>racing line</b> uses the full width of the track (outside → apex → outside) to make the corner as gentle as possible.</p>
+  <div class="widget">
+    <canvas id="cornerCanvas" width="560" height="360" aria-label="Top-down corner with racing line and G-force meter"></canvas>
+    <div class="corner-read">
+      <div><span>Speed</span><b id="cSpeed">0</b><em>km/h</em></div>
+      <div><span>Phase</span><b id="cPhase">—</b></div>
+      <div><span>G-force</span><b id="cG">0.0</b><em>g</em></div>
+    </div>
+  </div>
+  <ul class="ticks">
+    <li><b>Braking zone:</b> peak deceleration exceeds 5 g. Carbon brakes glow at around 1,000 °C.</li>
+    <li><b>Apex:</b> the innermost point of the line and usually the slowest point.</li>
+    <li><b>Exit:</b> early, smooth throttle matters most because it carries speed down the next straight.</li>
+  </ul>
+
+  <h3>Slipstream vs dirty air</h3>
+  <p>Following closely has two opposite effects. The car behind has <b>less drag</b> (the slipstream, or tow) on straights, but <b>less downforce</b> in corners because the leader's turbulent wake ("dirty air") disrupts its wings.</p>
+  <div class="widget">
+    <canvas id="wakeCanvas" width="560" height="200" aria-label="Side view of a car following another in its wake"></canvas>
+    <label class="slider"><span>Gap to car ahead: <b id="gapVal">20</b> m</span><input type="range" id="gap" min="5" max="50" value="20"></label>
+    <div class="meter"><span>Downforce lost (2021 car)</span><div><i id="dl21"></i></div><b id="dl21v"></b></div>
+    <div class="meter good"><span>Downforce lost (2022 car)</span><div><i id="dl22"></i></div><b id="dl22v"></b></div>
+    <div class="meter drag"><span>Straight-line tow</span><div><i id="tow"></i></div><b id="towv"></b></div>
+    <p class="small-note">Downforce-loss figures interpolated from FIA's published simulations for the 2022 rules (≈35% vs ≈4% lost at 20 m; ≈47% vs ≈18% at 10 m). Tow is illustrative.</p>
+  </div>
+</section>
+
+<!-- ============ 11. ERAS ============ -->
+<section id="eras" class="chapter" data-scene="eras">
+  <p class="num">11</p>
+  <h2>Seven decades of change</h2>
+  <p>The rules change constantly, for speed, safety, cost and better racing. Scroll through the eras and watch the car transform.</p>
+  <div class="era" data-era="classic">
+    <p class="era-year">1950s</p>
+    <h3>Front-engined pioneers</h3>
+    <p>The championship began in <b>1950</b>. Engines sat in front of the driver, tyres were tall and narrow with tread, and there were no wings and no seat belts. Drivers wore cloth or leather helmets early in the decade. Late in the 1950s, rear-engined cars (Cooper) changed everything.</p>
+    <div class="spec"><span>No aero wings</span><span>Wire wheels</span><span>Treaded tyres</span><span>Constructors' title from 1958</span></div>
+  </div>
+  <div class="era" data-era="wingcar">
+    <p class="era-year">Late 1970s</p>
+    <h3>Wings and ground effect</h3>
+    <p>Wings arrived in <b>1968</b>. In <b>1977–78</b> designers shaped the sidepods like upside-down wings and sealed them to the track with sliding skirts. The first ground-effect era was born. Downforce and cornering speeds soared, and skirts were banned; flat floors were required from 1983. The first turbo engines also arrived in 1977.</p>
+    <div class="spec"><span>Sliding skirts</span><span>Exposed engine</span><span>Huge rear slicks</span><span>Turbo era 1977–88</span></div>
+  </div>
+  <div class="era" data-era="v10">
+    <p class="era-year">2000s</p>
+    <h3>The V10 scream</h3>
+    <p>3.0-litre <b>V10</b> engines revved beyond 19,000 rpm. From 1998 cars were narrower (1.8 m) and ran <b>grooved tyres</b> to cut grip. High noses fed air under the car. V8s replaced V10s in 2006, and slicks returned in 2009.</p>
+    <div class="spec"><span>V10 mandatory 2000–05</span><span>Grooved tyres 1998–2008</span><span>Raised nose</span><span>Refuelling (1994–2009)</span></div>
+  </div>
+  <div class="era" data-era="modern">
+    <p class="era-year">2022–2025</p>
+    <h3>Ground effect returns</h3>
+    <p>Hybrid V6 turbo power units arrived in <b>2014</b>, the halo in <b>2018</b>. In <b>2022</b> the aero was rewritten around underfloor tunnels to reduce dirty air and help cars follow each other. 18-inch wheels arrived too. <b>2026</b> brought smaller, lighter cars with active aero and ~50% electric power.</p>
+    <div class="spec"><span>Hybrid PU (2014)</span><span>Halo (2018)</span><span>Venturi floor (2022)</span><span>18" wheels</span></div>
+  </div>
+  <div class="widget">
+    <table class="compare" id="eraTable">
+      <thead><tr><th></th><th>FE-55</th><th>WC-78</th><th>V10-04</th><th>GE-22</th></tr></thead>
+      <tbody>
+        <tr><th>Engine</th><td>Front, ~2.5 L</td><td>Rear 3.0 L V8</td><td>3.0 L V10</td><td>1.6 L V6 turbo hybrid</td></tr>
+        <tr><th>Peak power*</th><td>~250–290 hp</td><td>~480 hp</td><td>~900 hp</td><td>~1,000 hp</td></tr>
+        <tr><th>Downforce from</th><td>—</td><td>Sidepod "wings"</td><td>Wings &amp; diffuser</td><td>Floor tunnels</td></tr>
+        <tr><th>Driver protection</th><td>None</td><td>Roll hoop</td><td>High cockpit sides</td><td>Halo + survival cell</td></tr>
+      </tbody>
+    </table>
+    <p class="small-note">*Typical figures for each era, rounded. The cars on this site are fictional representations.</p>
+  </div>
+</section>
+
+<!-- ============ 12. QUIZ ============ -->
+<section id="quiz" class="chapter" data-scene="quiz">
+  <p class="num">12</p>
+  <h2>Test yourself</h2>
+  <p>Twelve questions. No pressure; it's only the championship at stake.</p>
+  <div class="widget quiz" id="quizBox"></div>
+  <footer class="site-foot">
+    <p>Built with three.js, GSAP and Blender-generated models. All cars, names and colours are fictional. Formula 1 is a trademark of Formula One Licensing B.V.; this is an independent educational project.</p>
+  </footer>
+</section>
+
+</main>
+
+<noscript><div class="noscript">This guide needs JavaScript for its 3D views and interactive diagrams. The text above still works without it.</div></noscript>
+
+<script src="js/vendor/gsap.min.js"></script>
+<script src="js/vendor/ScrollTrigger.min.js"></script>
+<script type="module" src="js/main.js"></script>
+<script>
+  // Safety net: modules can't load from file:// and old browsers lack module support.
+  (function () {
+    var txt = document.getElementById('loaderText');
+    if (location.protocol === 'file:') {
+      txt.innerHTML = 'This site must be served over http. In this folder run:<br><code>python3 -m http.server 8000</code><br>then open http://localhost:8000';
+      document.querySelector('.loader-bar').style.display = 'none';
+    }
+    setTimeout(function () {
+      if (window.__f1Booted || location.protocol === 'file:') return;
+      document.getElementById('loader').classList.add('done');
+      var fb = document.getElementById('stageFallback');
+      fb.hidden = false;
+      document.getElementById('fallbackMsg').textContent = 'The interactive 3D view did not start (slow connection or unsupported browser). Showing a pre-rendered image.';
+    }, 20000);
+  })();
+</script>
+</body>
+</html>
