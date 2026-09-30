@@ -35,6 +35,7 @@ function showFallback(msg, carId = 'modern') {
   $('#gl').style.display = 'none';
   $('#fallbackImg').src = `assets/img/previews/${carId}_hero.jpg`;
   if (msg) $('#fallbackMsg').textContent = msg;
+  $('#hudHint').textContent = 'Pre-rendered view · buttons below to change car';
 }
 
 // ------------------------------------------------------------------ HUD
@@ -173,6 +174,8 @@ function activate(id) {
   if (stage) stage.setScene(id);
   // car selector lock hint
   $('#carSelect').classList.toggle('locked', ['anatomy', 'power', 'drs'].includes(id));
+  const cid = stage?.current?.id;
+  if (cid) $('#hudHint').textContent = `${CARS[cid].name} · ${CARS[cid].era} · drag to rotate`;
 }
 
 function initChapters() {
@@ -253,7 +256,7 @@ async function boot() {
     } catch (e) {
       console.error(e);
       stage = null;
-      showFallback('3D view could not start on this device. Showing pre-rendered images instead.');
+      showFallback('The 3D view could not load (network error or unsupported device). Showing pre-rendered images instead.');
     }
   } else {
     showFallback('Your browser doesn\'t support WebGL 2, so the 3D view is replaced by pre-rendered images.');

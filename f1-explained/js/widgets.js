@@ -354,7 +354,7 @@ function simulate(kind) {
 function initStrategy() {
   const svg = $('#stratChart');
   const cap = $('#stratCaption');
-  const W = 560, H = 240, m = { l: 46, r: 16, t: 20, b: 34 };
+  const W = 560, H = 240, m = { l: 46, r: 28, t: 20, b: 34 };
   const draw = kind => {
     svg.innerHTML = '';
     const data = simulate(kind);

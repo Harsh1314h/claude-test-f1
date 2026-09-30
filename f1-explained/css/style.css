@@ -411,6 +411,7 @@ table.compare td { color: #d7dbe5; }
 }
 @media (max-width: 960px) {
   :root { --colw: 100vw; }
+  html { scroll-padding-top: calc(var(--topbar) + max(44vh, 260px) + 8px); }
   body { font-size: 16px; }
   #nav { display: none; position: fixed; top: var(--topbar); left: 0; right: 0; flex-direction: column; background: rgba(7,8,12,.97); padding: 10px 16px 18px; gap: 0; border-bottom: 1px solid var(--line); }
   #nav.open { display: flex; }

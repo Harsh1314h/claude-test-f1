@@ -94,6 +94,20 @@ Each part is a separately named object (`FrontWing`, `RearWing`, `RearWing_Flap`
 `Halo`, `Sidepod_L`, `Tyre_FL`, `ERS_MGUK`, `PU_ICE`, …) so the website can highlight, explode and
 animate it. Wheels have their origin at the hub (they spin) and the DRS flap at its trailing-edge pivot.
 
+## Testing
+
+`tests/smoke-test.mjs` drives the site in headless Chromium: it swaps cars, runs qualifying, checks the
+points maths, clicks parts (buttons, labels and 3D raycast), toggles exploded view, power-unit modes,
+tyre compounds, strategy, flags, steps through every era, completes the quiz and fails on console errors.
+
+```bash
+python3 -m http.server 8765 &          # from the f1-explained folder
+npm i playwright && node tests/smoke-test.mjs
+```
+
+Headless Chromium renders WebGL on the CPU (SwiftShader), so it runs at a few fps; that is expected. On a
+real GPU the scene is ~90 draw calls / ~80k triangles.
+
 ## Accuracy notes & assumptions
 
 - Facts were checked against the FIA regulations as understood for the 2022–2026 period. Where a figure
